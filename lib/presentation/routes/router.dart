@@ -3,14 +3,20 @@ import 'package:drift_tutorial/presentation/pages/create_todo_page.dart';
 import 'package:drift_tutorial/presentation/pages/delete_todo_page.dart';
 import 'package:drift_tutorial/presentation/pages/todo_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'router.g.dart';
 
-final GoRouter router = GoRouter(
-  routes: $appRoutes,
-  initialLocation: '/todo',
-);
+@riverpod
+GoRouter router(Ref ref) {
+  return GoRouter(
+    routes: $appRoutes,
+    initialLocation: '/todo',
+    debugLogDiagnostics: true,
+  );
+}
 
 final GlobalKey<NavigatorState> _sectionANavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'sectionANav');
@@ -92,7 +98,8 @@ class CreateTodoRoute extends GoRouteData {
   const CreateTodoRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) => const CreateTodoPage();
+  Widget build(BuildContext context, GoRouterState state) =>
+      const CreateTodoPage();
 }
 
 class DeleteTodoRoute extends GoRouteData {
