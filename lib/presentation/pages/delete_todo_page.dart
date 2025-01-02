@@ -28,7 +28,9 @@ class _DeleteTodoPageState extends State<DeleteTodoPage> {
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        TodoRepository.instance.deleteTodo(todo?.id ?? 0);
+                        setState(() {
+                          TodoRepository.instance.deleteTodo(todo?.id ?? 0);
+                        });
                       },
                     ),
                     title: Text(todo?.title ?? ''),

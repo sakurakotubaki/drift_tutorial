@@ -1,5 +1,6 @@
 import 'package:drift_tutorial/data/repository/todo_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateTodoPage extends StatefulWidget {
   const CreateTodoPage({super.key});
@@ -59,7 +60,7 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
                       content: _contentController.text,
                     );
                     if (context.mounted) {
-                      Navigator.of(context).pop(true);  // 保存成功を示すtrueを返す
+                      context.pop(true); // 保存成功を示すtrueを返す
                     }
                   }
                 },
