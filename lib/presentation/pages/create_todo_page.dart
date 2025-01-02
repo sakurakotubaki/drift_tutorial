@@ -1,15 +1,16 @@
-import 'package:drift_tutorial/data/repository/todo_repository.dart';
+import 'package:drift_tutorial/data/adapters/todo_adapter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class CreateTodoPage extends StatefulWidget {
+class CreateTodoPage extends ConsumerStatefulWidget {
   const CreateTodoPage({super.key});
 
   @override
-  State<CreateTodoPage> createState() => _CreateTodoPageState();
+  ConsumerState<CreateTodoPage> createState() => _CreateTodoPageState();
 }
 
-class _CreateTodoPageState extends State<CreateTodoPage> {
+class _CreateTodoPageState extends ConsumerState<CreateTodoPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
@@ -55,16 +56,16 @@ class _CreateTodoPageState extends State<CreateTodoPage> {
               ElevatedButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    await TodoRepository.instance.createTodo(
-                      title: _titleController.text,
-                      content: _contentController.text,
-                    );
+                    await ref.read(todoAdapterProvider.notifier).createTodo(
+                          title: _titleController.text,
+                          content: _contentController.text,
+                        );
                     if (context.mounted) {
                       context.pop(true); // 保存成功を示すtrueを返す
                     }
                   }
                 },
-                child: const Text('Create'),
+                child: const Text('保存'),
               ),
             ],
           ),

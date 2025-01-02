@@ -1,28 +1,37 @@
-import 'package:drift/drift.dart';
 import 'package:drift_tutorial/data/database.dart';
+import 'package:drift_tutorial/data/provider/database_provider.dart';
+import 'package:drift_tutorial/domain/ports/todo_port.dart';
+import 'package:drift/drift.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class TodoRepository {
-  final AppDatabase _db;
+part 'todo_adapter.g.dart';
 
-  TodoRepository(this._db);
+@Riverpod(keepAlive: true)
+class TodoAdapter extends _$TodoAdapter implements TodoPort {
+  AppDatabase get _db => ref.read(databaseProvider);
 
-  // 全てのデータを取得
+  @override
+  Stream<List<TodoItem>> build() {
+    return _db.getAllTodoItems();
+  }
+
+  @override
   Stream<List<TodoItem>> getAllTodoItems() {
     return _db.getAllTodoItems();
   }
 
-  // 論理削除されたアイテムを含めて全て取得
+  @override
   Stream<List<TodoItem>> getAllTodoItemsIncludeDeleted() {
     return _db.getAllTodoItemsIncludeDeleted();
   }
 
-  // 新規作成
+  @override
   Future<int> createTodo({
     required String title,
     required String content,
   }) async {
     final now = DateTime.now();
-    return _db.createTodoItem(
+    final result = await _db.createTodoItem(
       TodoItemsCompanion(
         title: Value(title),
         content: Value(content),
@@ -30,16 +39,18 @@ class TodoRepository {
         updatedAt: Value(now),
       ),
     );
+    ref.invalidateSelf();
+    return result;
   }
 
-  // 更新
+  @override
   Future<bool> updateTodo({
     required int id,
     String? title,
     String? content,
   }) async {
     final now = DateTime.now();
-    return _db.updateTodoItem(
+    final result = await _db.updateTodoItem(
       TodoItemsCompanion(
         id: Value(id),
         title: title != null ? Value(title) : const Value.absent(),
@@ -47,15 +58,21 @@ class TodoRepository {
         updatedAt: Value(now),
       ),
     );
+    ref.invalidateSelf();
+    return result;
   }
 
-  // 論理削除
+  @override
   Future<int> softDeleteTodo(int id) async {
-    return _db.softDeleteTodoItem(id);
+    final result = await _db.softDeleteTodoItem(id);
+    ref.invalidateSelf();
+    return result;
   }
 
-  // 物理削除
+  @override
   Future<int> deleteTodo(int id) async {
-    return _db.deleteTodoItem(id);
+    final result = await _db.deleteTodoItem(id);
+    ref.invalidateSelf();
+    return result;
   }
 }
