@@ -1,6 +1,6 @@
 import 'package:drift_tutorial/data/database.dart';
 import 'package:drift_tutorial/data/repository/todo_repository.dart';
-import 'package:drift_tutorial/presentation/pages/create_todo_page.dart';
+import 'package:drift_tutorial/presentation/routes/router.dart';
 import 'package:flutter/material.dart';
 
 class TodoListPage extends StatefulWidget {
@@ -19,11 +19,9 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result = await Navigator.of(context).push<bool>(
-            MaterialPageRoute(builder: (context) => const CreateTodoPage()),
-          );
+          final result = await const CreateTodoRoute().push<bool>(context);
           if (result == true && mounted) {
-            setState(() {});  // 保存成功時に更新
+            setState(() {}); // 保存成功時に更新
           }
         },
         child: const Icon(Icons.add, color: Colors.black),
